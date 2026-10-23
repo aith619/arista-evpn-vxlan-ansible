@@ -143,6 +143,57 @@ The project covers the complete automation lifecycle:
 | EVPN-driven VXLAN flood-list programming | Not working in observed tests |
 | End-to-end host connectivity | Failed |
 
+## 🏴‍☠️ The VXLAN Conquest — Can You Solve It?
+
+**The control plane is alive. The underlay is operational. But the packets aren't making it across the fabric.**
+
+Welcome to the **VXLAN Conquest**, an open troubleshooting challenge for network engineers, automation enthusiasts, and anyone who enjoys hunting down a stubborn network problem.
+
+### 🎯 Your Mission
+
+The five-node Arista EVPN-VXLAN fabric has reached an interesting state:
+
+- OSPF adjacencies are established.
+- Loopback reachability is verified.
+- MP-BGP EVPN sessions are established.
+- Type 2 MAC advertisements are visible.
+- Type 3 IMET advertisements are visible.
+- Local host MAC addresses are learned.
+- Remote VXLAN MAC installation remains unresolved.
+- End-to-end host connectivity is failing.
+
+**Your objective: Find the missing piece and make the hosts communicate across the VXLAN fabric.**
+
+### ⚔️ Rules of Engagement
+
+1. Clone the repository and deploy the fabric using the documented Ansible workflow.
+2. Reproduce the forwarding issue.
+3. Investigate the control plane, VTEP programming, flood lists, MAC tables, and VXLAN encapsulation.
+4. Identify the root cause using CLI evidence, packet captures, or automation.
+5. Develop a reproducible fix without breaking the existing underlay or EVPN sessions.
+
+### 🏆 Victory Conditions
+
+Your conquest is complete when you can demonstrate:
+
+- Successful host-to-host communication across different leaf switches.
+- Correct remote MAC installation.
+- Functional VXLAN encapsulation and decapsulation.
+- Consistent EVPN control-plane state.
+- A repeatable fix that can be deployed through Ansible.
+
+### 🧭 Share Your Discovery
+
+Found the culprit?
+
+Open a GitHub Issue explaining your findings, or submit a Pull Request containing your proposed fix, verification commands, and supporting evidence.
+
+Bonus points for identifying the root cause and automating the remediation.
+
+**The fabric is built. The clues are there. The conquest is yours.**
+
+*Happy hunting, engineers.*
+
 **Important:** This repository is an automation learning project with a validated underlay and EVPN control plane. End-to-end VXLAN data-plane forwarding is not yet operational. The outstanding behavior is documented in the troubleshooting section.
 
 ---
