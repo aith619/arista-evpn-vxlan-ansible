@@ -1,0 +1,17 @@
+---
+
+- name: Configure fabric hostnames
+  hosts: all
+  gather_facts: false
+
+  tasks:
+    - name: Set hostname inventory
+      arista.eos.eos_config:
+        lines:
+          - "hostname {{ inventory_hostname }}"
+    
+    - name: Save running configuration
+      arista.eos.eos_command:
+        commands:
+          - write memory
+

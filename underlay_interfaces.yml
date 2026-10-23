@@ -1,0 +1,23 @@
+---
+- name: Configure Layer 3 underlay interfaces
+  hosts: all
+  gather_facts: false
+
+  tasks:
+    - name: Configure routed fabric interfaces
+      arista.eos.eos_config:
+        parents: "interface {{ item.name }}"
+        lines:
+          - "description {{ item.description }}"
+          - "no switchport"
+          - "ip address {{ item.ip }}"
+          - "no shutdown"
+        save_when: never
+      loop: "{{ fabric_interfaces }}"
+      loop_control:
+        label: "{{ item.name }}"
+
+    - name: Save running configuration
+      arista.eos.eos_command:
+        commands:
+          - write memory

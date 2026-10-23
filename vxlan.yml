@@ -1,0 +1,36 @@
+---
+- name: Configure VXLAN VTEPs
+  hosts: leaves
+  gather_facts: false
+
+  tasks:
+    - name: Create local VLAN
+      arista.eos.eos_config:
+        lines:
+          - "vlan {{ access_vlan }}"
+        save_when: never
+
+    - name: Configure VXLAN interface
+      arista.eos.eos_config:
+        parents: interface Vxlan1
+        lines:
+          - "vxlan source-interface Loopback0"
+          - "vxlan udp-port 4789"
+          - "vxlan vlan {{ access_vlan }} vni {{ l2_vni }}"
+        save_when: never
+
+    - name: Configure EVPN VLAN service
+      arista.eos.eos_config:
+        parents:
+          - "router bgp {{ bgp_asn }}"
+          - "vlan {{ access_vlan }}"
+        lines:
+          - "rd {{ loopback_ip }}:{{ access_vlan }}"
+          - "route-target both {{ l2_vni }}:{{ l2_vni }}"
+          - "redistribute learned"
+        save_when: never
+
+    - name: Save configuration
+      arista.eos.eos_command:
+        commands:
+          - write memory

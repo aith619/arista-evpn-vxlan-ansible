@@ -1,0 +1,45 @@
+---
+- name: Configure BGP EVPN route reflectors
+  hosts: spines
+  gather_facts: false
+
+  vars:
+    evpn_clients:
+      - 1.1.1.1
+      - 2.2.2.2
+      - 3.3.3.3
+
+  tasks:
+    - name: Configure BGP process
+      arista.eos.eos_config:
+        parents: "router bgp {{ bgp_asn }}"
+        lines:
+          - "router-id {{ loopback_ip }}"
+          - "no bgp default ipv4-unicast"
+          - "neighbor EVPN-CLIENTS peer group"
+          - "neighbor EVPN-CLIENTS remote-as {{ bgp_asn }}"
+          - "neighbor EVPN-CLIENTS update-source Loopback0"
+        save_when: never
+
+    - name: Configure EVPN client neighbors
+      arista.eos.eos_config:
+        parents: "router bgp {{ bgp_asn }}"
+        lines:
+          - "neighbor {{ item }} peer group EVPN-CLIENTS"
+        save_when: never
+      loop: "{{ evpn_clients }}"
+
+    - name: Activate EVPN and route reflection
+      arista.eos.eos_config:
+        parents:
+          - "router bgp {{ bgp_asn }}"
+          - "address-family evpn"
+        lines:
+          - "neighbor EVPN-CLIENTS activate"
+          - "neighbor EVPN-CLIENTS route-reflector-client"
+        save_when: never
+
+    - name: Save configuration
+      arista.eos.eos_command:
+        commands:
+          - write memory

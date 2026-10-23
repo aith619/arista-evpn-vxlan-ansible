@@ -1,0 +1,84 @@
+
+all:
+  children:
+    spines:
+      hosts:
+       S-10:
+        ansible_host: 192.168.159.210
+        loopback_ip: 10.10.10.10
+        fabric_interfaces:
+         - name: Ethernet1
+           description: TO-L-01-Ethernet1
+           ip: 10.0.0.0/31
+         - name: Ethernet2
+           description: TO-L-02-Ethernet2
+           ip: 10.0.0.2/31
+         - name: Ethernet3
+           description: TO-L-03-Ethernet3
+           ip: 10.0.0.4/31
+
+       S-20:
+        ansible_host: 192.168.159.220
+        loopback_ip:  20.20.20.20
+        fabric_interfaces:
+         - name: Ethernet10
+           description: TO-L-01-Ethernet10
+           ip: 10.0.0.6/31
+         - name: Ethernet1
+           description: TO-L-02-Ethernet11
+           ip: 10.0.0.8/31
+         - name: Ethernet12
+           description: TO-L-03-Ethernet12
+           ip: 10.0.0.10/31
+
+    leaves:
+      hosts:
+        L-01:
+         ansible_host: 192.168.159.211
+         loopback_ip: 1.1.1.1
+         access_vlan: 102
+         l2_vni: 10102
+         fabric_interfaces:
+          - name: Ethernet1
+            description: TO_S-10_Eth1
+            ip: 10.0.0.0/31
+          - name: Ethernet10
+            description: TO_S-20_Eth10
+            ip: 10.0.0.7/31
+        L-02:
+         ansible_host: 192.168.159.212
+         loopback_ip: 2.2.2.2
+         access_vlan: 103
+         l2_vni: 10102
+         fabric_interfaces:
+          - name: Ethernet2
+            description: TO-S-10-Ethernet2
+            ip: 10.0.0.3/31
+          - name: Ethernet11
+            description: TO-S-20-Ethernet1
+            ip: 10.0.0.9/31
+        L-03:
+         ansible_host: 192.168.159.213
+         loopback_ip: 3.3.3.3
+         access_vlan: 104
+         l2_vni: 10102
+         fabric_interfaces:
+          - name: Ethernet3
+            description: TO-S-10-Ethernet3
+            ip: 10.0.0.5/31
+          - name: Ethernet12
+            description: TO-S-20-Ethernet12
+            ip: 10.0.0.11/31
+
+
+  vars:
+     bgp_asn: 65000
+     ansible_user: admin
+     ansible_connection: ansible.netcommon.httpapi
+     ansible_network_os: arista.eos.eos
+     ansible_httpapi_use_ssl: true
+     ansible_httpapi_validate_certs: false
+     ansible_httpapi_port: 443 
+     ansible_become: true
+     ansible_become_method: enable
+

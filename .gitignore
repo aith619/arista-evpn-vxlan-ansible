@@ -1,0 +1,27 @@
+# Python virtual environment
+.venv/
+venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Ansible temporary files
+*.retry
+.ansible/
+
+# Secrets and credentials
+.env
+.env.*
+!.env.example
+vault.yml
+vault.yaml
+*secret*
+*password*
+*.pem
+*.key
+
+# Editor and OS files
+.vscode/
+.idea/
+.DS_Store

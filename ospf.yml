@@ -1,0 +1,46 @@
+---
+- name: Configure OSPF underlay
+  hosts: all
+  gather_facts: false
+
+  tasks:
+    - name: Configure OSPF process
+      arista.eos.eos_config:
+        parents: router ospf 1
+        lines:
+          - router-id {{ loopback_ip }}
+          - passive-interface default
+          - no passive-interface {{ item.name }}
+        save_when: never
+      loop: "{{ fabric_interfaces }}"
+      loop_control:
+        label: "{{ item.name }}"
+
+    - name: Enable OSPF on fabric interfaces
+      arista.eos.eos_config:
+        parents: "interface {{ item.name }}"
+        lines:
+          - ip ospf area 0.0.0.0
+          - ip ospf network point-to-point
+        save_when: never
+      loop: "{{ fabric_interfaces }}"
+      loop_control:
+        label: "{{ item.name }}"
+
+    - name: Advertise Loopback0 in OSPF
+      arista.eos.eos_config:
+        parents: interface Loopback0
+        lines:
+          - ip ospf area 0.0.0.0
+        save_when: never
+
+    - name: Enable IPv4 routing
+      arista.eos.eos_config:
+        lines:
+          - ip routing
+        save_when: never
+
+    - name: Save running configuration
+      arista.eos.eos_command:
+        commands:
+          - write memory

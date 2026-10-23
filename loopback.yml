@@ -1,0 +1,17 @@
+---
+- name: Configure Loopback0 on Arista fabric
+  hosts: all
+  gather_facts: false
+
+ 
+  tasks:
+    - name: Configure Loopback 0 IP address
+      arista.eos.eos_config:
+       parents: interface Loopback0
+       lines:
+         - "ip address {{ loopback_ip }}/32"
+
+    - name: save running configuration
+      arista.eos.eos_command:
+        commands:
+          - write memory
